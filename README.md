@@ -1,18 +1,18 @@
 _____________________________________________________
-Bias Buster: AI-Powered Dataset Fairness Analysis 🤖
+**Bias Buster: AI-Powered Dataset Fairness Analysis 🤖**
 _____________________________________________________
 
 Bias Buster is a web application designed to promote fairness in machine learning by providing an accessible tool for detecting and mitigating hidden biases within datasets. Developed for the Push AI Hackathon, this project addresses the critical need for equitable AI systems by empowering developers to easily analyze their data before model training.
 ____________________________________________________________________________________________________________
 
-🎯 The Problem & Our Mission
+**🎯 The Problem & Our Mission**
 
 The Problem: Datasets, particularly smaller ones, often contain unexamined statistical biases. These can lead to machine learning models that are not only inaccurate but also unfair and discriminatory.
 
 Our Mission: To provide an intelligent, automated tool that makes dataset fairness analysis accessible to everyone. We aim to bridge the gap between raw data and a fair, model-ready dataset.
 ____________________________________________________________________________________________________________
 
-✨ Key Features
+**✨ Key Features**
 
 Effortless Analysis 🚀: Simply upload your CSV file to initiate a comprehensive bias scan.
 
@@ -29,7 +29,7 @@ Actionable Recommendations 💡: The tool doesn't just find problems; it provide
 Interactive Dashboard 📊: Visualizes all findings with dynamic, easy-to-understand charts, making complex results simple to interpret.
 ____________________________________________________________________________________________
 
-🛠️ Technology & Methodology
+**🛠️ Technology & Methodology**
 
 Our application is built on a modern tech stack designed for efficiency and clarity. The analysis follows a three-stage pipeline:
 
@@ -48,7 +48,7 @@ Frontend: HTML5, Tailwind CSS, Vanilla JavaScript
 Visualization: Chart.js
 ________________________________________________________________________________________________
 
-🚀 Local Installation
+**🚀 Local Installation**
 
 To run the application on your machine, follow these steps:
 
@@ -67,6 +67,6 @@ Start the development server: flask run
 Open your browser and go to http://127.0.0.1:5000.
 ________________________________________________________________________________________________
 
-📄 License
+**📄 License**
 
 This project is distributed under the MIT License.
