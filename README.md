@@ -1,15 +1,16 @@
+_____________________________________________________
 Bias Buster: AI-Powered Dataset Fairness Analysis 🤖
-
+_____________________________________________________
 
 Bias Buster is a web application designed to promote fairness in machine learning by providing an accessible tool for detecting and mitigating hidden biases within datasets. Developed for the Push AI Hackathon, this project addresses the critical need for equitable AI systems by empowering developers to easily analyze their data before model training.
-
+____________________________________________________________________________________________________________
 
 🎯 The Problem & Our Mission
 
 The Problem: Datasets, particularly smaller ones, often contain unexamined statistical biases. These can lead to machine learning models that are not only inaccurate but also unfair and discriminatory.
 
 Our Mission: To provide an intelligent, automated tool that makes dataset fairness analysis accessible to everyone. We aim to bridge the gap between raw data and a fair, model-ready dataset.
-
+____________________________________________________________________________________________________________
 
 ✨ Key Features
 
@@ -26,7 +27,7 @@ Missing Data: Reports the percentage of null or missing values in each column.
 Actionable Recommendations 💡: The tool doesn't just find problems; it provides clear, context-aware suggestions (e.g., "Use SMOTE for imbalance," "Apply a Log Transform for skewness") to help you fix them.
 
 Interactive Dashboard 📊: Visualizes all findings with dynamic, easy-to-understand charts, making complex results simple to interpret.
-
+____________________________________________________________________________________________
 
 🛠️ Technology & Methodology
 
@@ -45,7 +46,7 @@ Data Analysis: Pandas, Scikit-learn, Imbalanced-learn
 Frontend: HTML5, Tailwind CSS, Vanilla JavaScript
 
 Visualization: Chart.js
-
+________________________________________________________________________________________________
 
 🚀 Local Installation
 
@@ -64,7 +65,7 @@ Install the required packages: pip install -r requirements.txt
 Start the development server: flask run
 
 Open your browser and go to http://127.0.0.1:5000.
-
+________________________________________________________________________________________________
 
 📄 License
 
