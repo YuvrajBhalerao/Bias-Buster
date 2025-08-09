@@ -29,3 +29,8 @@ Provides utilities for WSGI applications, including the secure_filename function
 Pinning it explicitly ensures stability.
 
 Werkzeug==3.0.1
+
+
+# -- Production Web Server --
+# A production-grade WSGI server to run the Flask app on a live server.
+gunicorn==22.0.0
