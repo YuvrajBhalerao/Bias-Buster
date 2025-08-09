@@ -1,35 +1,22 @@
--- Web Application Framework --
-
-Used to build the web server and handle HTTP requests.
-
+# -- Web Application Framework --
+# Used to build the web server and handle HTTP requests.
 Flask==3.0.0
 
--- Data Science & Analysis Core --
-
-The primary library for data manipulation and analysis.
-
+# -- Data Science & Analysis Core --
+# The primary library for data manipulation and analysis.
 pandas==2.2.1
-
-Used for some data preprocessing and metrics.
-
+# Used for some data preprocessing and metrics.
 scikit-learn==1.4.1.post1
 
--- Data Resampling & Augmentation --
-
-A key library for handling imbalanced datasets. Provides SMOTE,
-
-over-sampling, and under-sampling techniques.
-
+# -- Data Resampling & Augmentation --
+# A key library for handling imbalanced datasets. Provides SMOTE,
+# over-sampling, and under-sampling techniques.
 imbalanced-learn==0.12.0
 
--- Werkzeug (Flask Dependency) --
-
-Provides utilities for WSGI applications, including the secure_filename function.
-
-Pinning it explicitly ensures stability.
-
+# -- Werkzeug (Flask Dependency) --
+# Provides utilities for WSGI applications, including the secure_filename function.
+# Pinning it explicitly ensures stability.
 Werkzeug==3.0.1
-
 
 # -- Production Web Server --
 # A production-grade WSGI server to run the Flask app on a live server.
