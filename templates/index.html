@@ -1,225 +1,320 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bias Buster | AI Hackathon</title>
+    <title>Bias Buster | AI-Powered Fairness Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #7c3aed, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         .card {
             background-color: white;
-            border-radius: 0.75rem;
-            border: 1px solid #e5e7eb;
-            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0; /* slate-200 */
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             transition: all 0.3s ease-in-out;
         }
         .card:hover {
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25em 0.6em;
-            font-size: 80%;
-            font-weight: 600;
-            line-height: 1;
-            text-align: center;
-            white-space: nowrap;
-            vertical-align: baseline;
-            border-radius: 0.375rem;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .spinner {
-            border-top-color: #3498db;
-            animation: spin 1s linear infinite;
+        .animated-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .animated-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hero-bg {
+            background-image: radial-gradient(#e0e7ff 1px, transparent 1px);
+            background-size: 20px 20px;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="text-slate-700">
 
-    <div class="container mx-auto px-4 py-8 md:py-16">
-        <!-- Header -->
-        <header class="text-center mb-12">
-            <div class="inline-block bg-blue-100 text-blue-700 p-3 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">Bias Buster</h1>
-            <p class="mt-3 text-lg text-gray-500 max-w-2xl mx-auto">Your AI-powered assistant for dataset fairness and quality. Built for the Push AI Hackathon.</p>
-        </header>
-
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="max-w-2xl mx-auto mb-6 p-4 rounded-md {{ 'bg-red-100 text-red-800 border border-red-200' if category == 'error' else 'bg-blue-100 text-blue-800 border border-blue-200' }}" role="alert">
-                    <span class="font-medium">{{ message }}</span>
-                </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <!-- Upload Section -->
-        <div class="card max-w-2xl mx-auto" id="upload-card">
-            <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
-                <h2 class="text-2xl font-bold mb-2 text-center text-gray-800">Start Your Analysis</h2>
-                <p class="text-center text-gray-500 mb-6">Upload a CSV file to get started. Max file size: 16MB.</p>
-                
-                <div class="mt-4 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                        <span>Upload a file</span>
-                        <input id="file-upload" name="file" type="file" class="sr-only" accept=".csv">
-                    </label>
-                    <p class="text-xs text-gray-500 mt-1" id="file-name-display">or drag and drop</p>
-                </div>
-
-                <div class="mt-8 text-center">
-                    <button type="submit" id="submit-button" class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 flex items-center justify-center">
-                        <span id="button-text">Analyze for Bias</span>
-                        <div id="spinner" class="spinner h-5 w-5 ml-3 border-4 border-gray-300 rounded-full hidden"></div>
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Results Section -->
-        {% if results_ready %}
-        <div class="mt-12 max-w-5xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-8">Analysis for <span class="text-blue-600">{{ filename }}</span></h2>
-
-            <div class="grid md:grid-cols-5 gap-8">
-                <!-- Left Rail: Suggestions -->
-                <div class="md:col-span-2">
-                    <div class="card sticky top-8">
-                        <h3 class="text-xl font-bold mb-4 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                            Actionable Suggestions
-                        </h3>
-                        <ul class="space-y-3 text-sm">
-                            {% for suggestion in suggestions.resampling %}
-                                <li class="p-3 bg-green-50 rounded-lg border border-green-200 text-green-800">{{ suggestion | safe }}</li>
-                            {% endfor %}
-                             {% for suggestion in suggestions.feature_engineering %}
-                                <li class="p-3 bg-yellow-50 rounded-lg border border-yellow-200 text-yellow-800">{{ suggestion | safe }}</li>
-                            {% endfor %}
-                             {% for suggestion in suggestions.data_imputation %}
-                                <li class="p-3 bg-purple-50 rounded-lg border border-purple-200 text-purple-800">{{ suggestion | safe }}</li>
-                            {% endfor %}
-                            {% if not suggestions.resampling and not suggestions.feature_engineering and not suggestions.data_imputation %}
-                                <li class="p-3 bg-gray-100 rounded-lg text-gray-700">No specific issues requiring augmentation were detected. The dataset appears balanced and clean.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Right Rail: Detailed Report -->
-                <div class="md:col-span-3">
-                    <div class="card">
-                        <h3 class="text-xl font-bold mb-4 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                            Detailed Bias Report
-                        </h3>
-                        
-                        <!-- Imbalance Analysis -->
-                        <div class="mb-6">
-                            <h4 class="font-semibold text-lg mb-2">Imbalance Analysis</h4>
-                            {% if bias_results.imbalance_analysis %}
-                                {% for item in bias_results.imbalance_analysis %}
-                                    <div class="p-3 border rounded-md mb-2 bg-gray-50">
-                                        <p><span class="font-semibold">{{ item.column }}:</span> <span class="badge bg-red-100 text-red-800">Highly Imbalanced</span></p>
-                                        <pre class="text-xs bg-gray-100 p-2 rounded mt-2 overflow-x-auto">{{ item.details | tojson(indent=2) }}</pre>
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="text-gray-500 text-sm">No significant class imbalances detected in categorical features.</p>
-                            {% endif %}
-                        </div>
-
-                        <!-- Distribution Analysis -->
-                        <div class="mb-6">
-                            <h4 class="font-semibold text-lg mb-2">Numerical Distribution Analysis</h4>
-                             {% if bias_results.distribution_analysis %}
-                                {% for item in bias_results.distribution_analysis %}
-                                     <div class="p-3 border rounded-md mb-2 bg-gray-50">
-                                        <p><span class="font-semibold">{{ item.column }}:</span> <span class="badge bg-yellow-100 text-yellow-800">Highly Skewed (Skewness: {{ item.skewness }})</span></p>
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <p class="text-gray-500 text-sm">No significant skewness detected in numerical features.</p>
-                            {% endif %}
-                        </div>
-
-                        <!-- Missing Data Analysis -->
-                        <div>
-                             <h4 class="font-semibold text-lg mb-2">Missing Data Analysis</h4>
-                             {% if bias_results.missing_data_analysis.has_missing_data %}
-                                <div class="p-3 border rounded-md bg-gray-50">
-                                     <p><span class="badge bg-purple-100 text-purple-800">Missing Values Detected</span></p>
-                                     <pre class="text-xs bg-gray-100 p-2 rounded mt-2 overflow-x-auto">{{ bias_results.missing_data_analysis.details | tojson(indent=2) }}</pre>
-                                </div>
-                             {% else %}
-                                <p class="text-gray-500 text-sm">No missing values found in the dataset.</p>
-                             {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-8">
-                <a href="/" class="bg-gray-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">
-                    Analyze Another File
+    <!-- Hero Section -->
+    <section class="relative text-center py-24 md:py-40 px-4 hero-bg">
+        <div class="relative z-10">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-slate-900">
+                Fairness isn't a feature.
+                <br>
+                It's the <span class="gradient-text">foundation</span>.
+            </h1>
+            <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
+                Bias Buster is an open-source tool that helps you build more equitable AI by detecting statistical bias in your datasets—before it impacts your model.
+            </p>
+            <div class="mt-10">
+                <a href="#app-main" class="bg-slate-900 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-all duration-300">
+                    Start Analysis
                 </a>
             </div>
         </div>
-        {% endif %}
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight animated-item">The Hidden Risks in Your Data</h2>
+                <p class="mt-4 text-lg text-slate-600 animated-item" style="transition-delay: 100ms;">
+                    Even with the best intentions, bias can silently creep into datasets, leading to models that are unfair, unreliable, and untrustworthy. We help you find the three most common culprits.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto mt-16">
+                <div class="card p-8 animated-item" style="transition-delay: 200ms;">
+                    <div class="inline-block bg-rose-100 text-rose-600 p-3 rounded-xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><path d="M16 14.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm-10 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm15 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM12 4.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM4 4.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM21.5 4a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-900">Class Imbalance</h3>
+                    <p class="text-slate-600">When models see one group far more often than another, they become biased towards the majority. This leads to poor performance and unfair outcomes for underrepresented groups.</p>
+                </div>
+                <div class="card p-8 animated-item" style="transition-delay: 300ms;">
+                    <div class="inline-block bg-amber-100 text-amber-600 p-3 rounded-xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><path d="M20.25 2.75l-4.5 9h-7.5l-4.5-9h16.5zM12 21.75l-4.5-9h9l-4.5 9z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-900">Feature Skewness</h3>
+                    <p class="text-slate-600">Skewed data can cause a model to over-value certain ranges of a feature, creating a system that is unfairly optimized for a specific subset of your data.</p>
+                </div>
+                <div class="card p-8 animated-item" style="transition-delay: 400ms;">
+                     <div class="inline-block bg-violet-100 text-violet-600 p-3 rounded-xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 2a8 8 0 100 16 8 8 0 000-16zm-1 3v5h2V7h-2zm0 6v2h2v-2h-2z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-900">Missing Data</h3>
+                    <p class="text-slate-600">If data isn't missing at random, it creates blind spots. Your model may learn from an incomplete picture, leading to biased and unreliable conclusions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Application -->
+        <main id="app-main" class="py-20 md:py-32">
+            <div class="container mx-auto px-4">
+                <!-- Upload Section -->
+                <div id="upload-section" class="max-w-3xl mx-auto text-center animated-item">
+                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Ready to Build Fairer AI?</h2>
+                    <p class="mt-4 text-lg text-slate-600">Upload your CSV to generate an instant fairness report.</p>
+                    <div class="card p-8 mt-10">
+                        <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+                            <div class="border-2 border-dashed border-slate-300 rounded-xl p-10 text-center hover:border-indigo-500 transition-colors cursor-pointer" id="drop-zone">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                                <label for="file-upload" class="relative cursor-pointer mt-4 font-semibold text-indigo-600 hover:text-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input id="file-upload" name="file" type="file" class="sr-only" accept=".csv">
+                                </label>
+                                <p class="text-sm text-slate-500 mt-1" id="file-name-display">or drag and drop</p>
+                                <p class="text-xs text-slate-400 mt-4">Max file size: 16MB</p>
+                            </div>
+
+                            <div class="mt-8">
+                                <button type="submit" id="submit-button" class="w-full bg-slate-900 text-white font-bold py-4 px-6 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span id="button-text">Generate Report</span>
+                                    <div id="spinner" class="spinner h-5 w-5 ml-3 border-4 border-gray-200 rounded-full hidden"></div>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                {% if results_ready %}
+                <div id="results-dashboard" class="mt-20 animated-item">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold">Analysis Report: <span class="text-indigo-600">{{ filename }}</span></h2>
+                        <p class="text-slate-500 mt-3">Here's what we found in your dataset. Use these insights and suggestions to improve your model's fairness.</p>
+                    </div>
+
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="card p-6 md:p-8">
+                                <h3 class="text-2xl font-bold text-slate-900 mb-1">Class Imbalance</h3>
+                                <p class="text-slate-600 mb-6">Checks for disproportionate representation in key categorical columns.</p>
+                                {% if bias_results.imbalance_analysis %}
+                                    {% for item in bias_results.imbalance_analysis %}
+                                        <div class="p-4 border rounded-lg bg-slate-50/50">
+                                            <div class="flex justify-between items-center">
+                                                <p class="font-semibold text-slate-800">{{ item.column }}</p>
+                                                <span class="text-xs font-bold py-1 px-2.5 rounded-full bg-rose-100 text-rose-700">Highly Imbalanced</span>
+                                            </div>
+                                            <pre class="text-xs bg-slate-100 p-3 rounded mt-3 overflow-x-auto">{{ item.details | tojson(indent=2) }}</pre>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-slate-600 text-sm p-4 bg-green-50 text-green-800 rounded-lg border border-green-200 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>No significant class imbalances detected.</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div class="card p-6">
+                                    <h3 class="text-xl font-bold text-slate-900 mb-1">Feature Skewness</h3>
+                                    <p class="text-slate-600 mb-4">Finds features with distorted distributions.</p>
+                                    {% if bias_results.distribution_analysis %}
+                                        {% for item in bias_results.distribution_analysis %}
+                                            <div class="p-3 border rounded-lg bg-slate-50/50 mb-2">
+                                                <div class="flex justify-between items-center">
+                                                    <p class="font-semibold text-slate-800">{{ item.column }}</p>
+                                                    <span class="text-xs font-bold py-1 px-2.5 rounded-full bg-amber-100 text-amber-700">Skewed</span>
+                                                </div>
+                                                <p class="text-sm text-slate-600 mt-1">Skewness: {{ item.skewness }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-slate-600 text-sm p-4 bg-green-50 text-green-800 rounded-lg border border-green-200 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>No significant skewness detected.</p>
+                                    {% endif %}
+                                </div>
+                                <div class="card p-6">
+                                    <h3 class="text-xl font-bold text-slate-900 mb-1">Missing Data</h3>
+                                    <p class="text-slate-600 mb-4">Identifies columns with missing values.</p>
+                                    {% if bias_results.missing_data_analysis.has_missing_data %}
+                                        <div class="p-3 border rounded-lg bg-slate-50/50">
+                                            <span class="text-xs font-bold py-1 px-2.5 rounded-full bg-violet-100 text-violet-700">Missing Values Found</span>
+                                            <pre class="text-xs bg-slate-100 p-3 rounded mt-3 overflow-x-auto">{{ bias_results.missing_data_analysis.details | tojson(indent=2) }}</pre>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-slate-600 text-sm p-4 bg-green-50 text-green-800 rounded-lg border border-green-200 flex items-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>No missing values found.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-1">
+                            <div class="card p-6 sticky top-8 glass-card">
+                                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                                    Actionable Suggestions
+                                </h3>
+                                <div class="space-y-4 text-sm">
+                                    {% if not suggestions.resampling and not suggestions.feature_engineering and not suggestions.data_imputation %}
+                                        <div class="p-4 bg-slate-100 rounded-lg text-slate-700">No critical issues were detected that require mitigation. Your dataset looks well-balanced and clean based on our checks.</div>
+                                    {% else %}
+                                        {% if suggestions.resampling %}
+                                            <div class="p-4 bg-rose-50 rounded-lg border border-rose-200 text-rose-900">
+                                                <h4 class="font-bold mb-1">For Imbalance:</h4>
+                                                <p>{{ suggestions.resampling[0] | safe }}</p>
+                                            </div>
+                                        {% endif %}
+                                        {% if suggestions.feature_engineering %}
+                                            <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 text-amber-900">
+                                                <h4 class="font-bold mb-1">For Skewness:</h4>
+                                                <p>{{ suggestions.feature_engineering[0] | safe }}</p>
+                                            </div>
+                                        {% endif %}
+                                        {% if suggestions.data_imputation %}
+                                            <div class="p-4 bg-violet-50 rounded-lg border border-violet-200 text-violet-900">
+                                                <h4 class="font-bold mb-1">For Missing Data:</h4>
+                                                <p>{{ suggestions.data_imputation[0] | safe }}</p>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="text-center mt-16">
+                        <a href="/" class="bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300">
+                            Analyze Another Dataset
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </main>
     </div>
 
-    <footer class="text-center py-6 border-t border-gray-200 mt-12">
-        <p class="text-sm text-gray-500">&copy; 2024 Bias Buster. A proud entry for the Push AI Hackathon.</p>
+    <footer class="text-center bg-white py-12 border-t border-slate-200 mt-16">
+        <p class="text-slate-600">&copy; 2025 Bias Buster</p>
+        <p class="text-sm text-slate-500 mt-4">Created by <span class="font-semibold text-indigo-600">Yuvraj Bhalerao</span></p>
+        <p class="text-sm text-slate-500 mt-2">A proud entry for the Push AI Hackathon.</p>
     </footer>
 
     <script>
-        // --- UI Enhancements Script ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Animation on Scroll ---
+            const animatedItems = document.querySelectorAll('.animated-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-        // Show loading spinner on form submission
-        const uploadForm = document.getElementById('upload-form');
-        const submitButton = document.getElementById('submit-button');
-        const buttonText = document.getElementById('button-text');
-        const spinner = document.getElementById('spinner');
-        const fileInput = document.getElementById('file-upload');
-        const fileNameDisplay = document.getElementById('file-name-display');
+            animatedItems.forEach(item => {
+                observer.observe(item);
+            });
 
-        uploadForm.addEventListener('submit', function() {
-            // Check if a file is selected
-            if (fileInput.files.length > 0) {
+            // --- Form & Drag-and-Drop Logic ---
+            const uploadForm = document.getElementById('upload-form');
+            if (!uploadForm) return;
+
+            const submitButton = document.getElementById('submit-button');
+            const buttonText = document.getElementById('button-text');
+            const spinner = document.getElementById('spinner');
+            const fileInput = document.getElementById('file-upload');
+            const fileNameDisplay = document.getElementById('file-name-display');
+            const dropZone = document.getElementById('drop-zone');
+
+            uploadForm.addEventListener('submit', function(e) {
+                if (fileInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Please select a file to upload.');
+                    return;
+                }
                 buttonText.textContent = 'Analyzing...';
                 spinner.classList.remove('hidden');
                 submitButton.disabled = true;
-                submitButton.classList.add('cursor-not-allowed', 'opacity-75');
-            }
-        });
+            });
 
-        // Display the selected file name
-        fileInput.addEventListener('change', function() {
-            if (fileInput.files.length > 0) {
-                fileNameDisplay.textContent = fileInput.files[0].name;
-                fileNameDisplay.classList.add('text-blue-600', 'font-semibold');
-            } else {
-                fileNameDisplay.textContent = 'or drag and drop';
-                fileNameDisplay.classList.remove('text-blue-600', 'font-semibold');
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    fileNameDisplay.textContent = fileInput.files[0].name;
+                    fileNameDisplay.classList.add('text-indigo-600', 'font-semibold');
+                } else {
+                    fileNameDisplay.textContent = 'or drag and drop';
+                    fileNameDisplay.classList.remove('text-indigo-600', 'font-semibold');
+                }
+            });
+            
+            if (dropZone) {
+                dropZone.addEventListener('click', () => fileInput.click());
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('border-indigo-500', 'bg-indigo-50');
+                });
+                dropZone.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+                });
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-indigo-500', 'bg-indigo-50');
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        const changeEvent = new Event('change');
+                        fileInput.dispatchEvent(changeEvent);
+                    }
+                });
             }
         });
     </script>
-
 </body>
 </html>
