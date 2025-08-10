@@ -11,7 +11,11 @@
     <style>
         body { 
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
+            /* New Background Image Styling */
+            background-image: url('https://images.unsplash.com/photo-1554147090-e1221a04a025?q=80&w=2550&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -21,9 +25,11 @@
             -webkit-text-fill-color: transparent;
         }
         .card {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 1rem;
-            border: 1px solid #e2e8f0; /* slate-200 */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* slate-200 with opacity */
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             transition: all 0.3s ease-in-out;
         }
@@ -45,17 +51,27 @@
             opacity: 1;
             transform: translateY(0);
         }
-        .hero-bg {
-            background-image: radial-gradient(#e0e7ff 1px, transparent 1px);
-            background-size: 20px 20px;
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(248, 250, 252, 0.6); /* Semi-transparent overlay */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
     </style>
 </head>
 <body class="text-slate-700">
 
     <!-- Hero Section -->
-    <section class="relative text-center py-24 md:py-40 px-4 hero-bg">
-        <div class="relative z-10">
+    <section class="relative text-center py-24 md:py-40 px-4 hero-section">
+        <div class="hero-content">
             <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-slate-900">
                 Fairness isn't a feature.
                 <br>
@@ -73,7 +89,7 @@
     </section>
 
     <!-- Problem Section -->
-    <section class="py-20 md:py-32 bg-white">
+    <section class="py-20 md:py-32 bg-white/80 backdrop-blur-sm">
         <div class="container mx-auto px-4">
             <div class="text-center max-w-3xl mx-auto">
                 <h2 class="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight animated-item">The Hidden Risks in Your Data</h2>
@@ -240,7 +256,7 @@
         </main>
     </div>
 
-    <footer class="text-center bg-white py-12 border-t border-slate-200 mt-16">
+    <footer class="text-center bg-white/80 backdrop-blur-sm py-12 border-t border-slate-200 mt-16">
         <p class="text-slate-600">&copy; 2025 Bias Buster</p>
         <p class="text-sm text-slate-500 mt-4">Created by <span class="font-semibold text-indigo-600">Yuvraj Bhalerao</span></p>
         <p class="text-sm text-slate-500 mt-2">A proud entry for the Push AI Hackathon.</p>
