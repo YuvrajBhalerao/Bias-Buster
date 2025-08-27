@@ -2,7 +2,7 @@ _____________________________________________________
 **Bias Buster: AI-Powered Dataset Fairness Analysis 🤖**
 _____________________________________________________
 
-Bias Buster is a web application designed to promote fairness in machine learning by providing an accessible tool for detecting and mitigating hidden biases within datasets. Developed for the Push AI Hackathon, this project addresses the critical need for equitable AI systems by empowering developers to easily analyze their data before model training.
+Bias Buster is a web application designed to promote fairness in machine learning by providing an accessible tool for detecting and mitigating hidden biases within datasets. Developed for the Data Analysts, this project addresses the critical need for equitable AI systems by empowering developers to easily analyze their data before model training.
 ____________________________________________________________________________________________________________
 
 **🎯 The Problem & Our Mission**
